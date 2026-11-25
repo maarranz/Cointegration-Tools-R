@@ -4,7 +4,7 @@
 
 Teaching-oriented R tools for **single-equation cointegration**, developed for **Applied Time Series Econometrics (ATSE)** at **Universidad Carlos III de Madrid**.
 
-> **Status: planning.** No code yet. The functions below are the planned API; names and arguments may change. The design decisions are recorded in [`DESIGN.md`](DESIGN.md).
+> **Status: in development.** `coint_reg()` (OLS, FM-OLS, DOLS, IM-OLS) and `coint_wald_test()` are written and tested; the other functions below are planned, and names and arguments may still change. The design decisions are recorded in [`DESIGN.md`](DESIGN.md).
 
 ## Scope
 
@@ -13,7 +13,7 @@ Teaching-oriented R tools for **single-equation cointegration**, developed for *
 | Task | Planned functions |
 |:--|:--|
 | Integration order | `integration_order()`: unit-root tests on each series, in levels and differences (through `unitroottools`) |
-| Cointegrating regression | `coint_reg()`: OLS, fully modified OLS, dynamic OLS and integrated modified OLS (through `cointReg`), one interface and one result class; `coint_wald_test()` for restrictions on the cointegrating vector |
+| Cointegrating regression | `coint_reg()`: OLS, fully modified OLS, dynamic OLS and integrated modified OLS, one interface and one result class; `coint_wald_test()` for restrictions on the cointegrating vector |
 | Engle–Granger test | `eg_test()`: residual-based ADF test with finite-sample critical values and p-values that depend on the number of variables and the deterministic terms; optional comparison across normalisations |
 | ECM-based test | `ecm_test()`: the t-ratio on the error-correction term (Kremers, Ericsson and Dolado; Ericsson and MacKinnon), with its own critical values and p-values |
 | Error-correction model | `coint_ecm()`: the two-step ECM, returned as an `adltools` model so that its diagnostics, CUSUM, Chow and Hansen tests apply directly; weak exogeneity of the regressors |

@@ -59,35 +59,43 @@ coint_reg(y ~ x1 + x2, data,
           leads = NULL, lags = NULL, info_crit = "AIC") # DOLS
 ```
 
-- **Engine: `cointReg`** (Aschersleben and Wagner; CRAN 0.2.0, 2016, GPL-3;
-  Imports checkmate, MASS, matrixStats). Called through one internal adapter
-  so the rest of the package never sees its interface:
-  - `cointReg`'s `$theta` layout (vector vs matrix, row names) is what the
-    chapter's `get_theta_x()`/`get_theta_const()` helpers work around. The
-    adapter normalises it once; the chapter can then drop the helpers.
-  - Matrix-only input → our formula/data interface, the input types of
-    adltools (numeric, ts, zoo/xts, data frame with time column, tsibble),
-    the same NA rules (adltools §12).
-- IM-OLS is Vogelsang and Wagner (2014), the method of cointReg's second
-  author. Its point estimate needs no kernel or bandwidth; inference does,
-  either with a long-run variance (as FM-OLS) or with fixed-b critical
-  values. **[check]** which of the two `cointRegIM()` reports before
-  documenting it.
-- `method = "OLS"` is computed here (lm on the levels regression); the
-  printed standard errors carry a warning that they are not valid for
-  inference on β (chapter, "Static OLS").
-- One result class, `coint_reg`, whatever the method: coefficient table with
-  α/β labels, `vcov()`, residuals ẑ_t as a series on the original index,
-  method, kernel/bandwidth or lead/lag choice, sample.
-- `coint_wald_test(fit, R, r)` (or `hypothesis = "x1 = 1"`): Wald tests on β
-  with the method's covariance (χ², asymptotic). The canonical use is
-  H₀: β = 1 in the term-structure example. Refuses `method = "OLS"`.
-- **License.** Importing a GPL-3 package from an MIT package is fine; no
-  `cointReg` code is copied. **Fallback** if `cointReg` is archived: FM-OLS
-  and DOLS are short to write with the long-run variance code already in
-  unitroottools (`lrv.R`); IM-OLS is the only part worth not rewriting now.
-- Validation: own DOLS via `lm` with HAC (chapter's `dynlm` version) against
-  `cointRegD()`; FM-OLS against the MATLAB/EViews output for one dataset.
+- **Engine: own code** (decided 25 Nov 2026; `R/lrv.R`, `R/estimators.R`).
+  cointReg (CRAN 0.2.0, 2016) is in Suggests only, as the reference in the
+  tests. Reasons, from reading its source:
+  - `cointRegIM()` returns `varmat` without ω̂_{u·v}: used as a covariance
+    it overstates the standard errors (≈50% in a test case).
+  - `cointRegD()` compares AIC/BIC across lead/lag pairs fitted on
+    different samples, with a penalty that ignores the deterministic terms;
+    with 0 leads and 0 lags it drops Δx_t and returns static OLS.
+  - p-values from t(T − k); coefficient names `deter`, `x.coint` or none.
+  - Bartlett/Parzen bandwidth below 1 uses lag 1 with a negative weight.
+- What the package does instead:
+  - **FM-OLS** as cointReg, but the bias correction uses n = T − 1 (the
+    observations in the sums) instead of T; ω̂_{u·v} and standard errors
+    identical, coefficients differ by O(1/T) (< 2e-3 in the tests).
+  - **DOLS**: Δx_{t−j}, j = −leads..lags, Δx_t always included; selection
+    by AIC/BIC over 0..kmax (kmax = ⌊4(T/100)^{1/4}⌋) with every pair on the
+    common sample t = 2 + kmax..T − kmax and all coefficients counted; the
+    chosen pair is refitted on its maximal sample. Covariance: long-run
+    variance of the residuals × (Z′Z)⁻¹ (as cointReg). Identical to cointReg
+    for given leads/lags ≥ 1 and to the regression written out with `lm`.
+  - **IM-OLS** (type 1): identical to cointReg, with the covariance
+    ω̂_{u·v}(Z′Z)⁻¹C′C(Z′Z)⁻¹ correctly scaled. ω̂_{u·v} from the FM-OLS
+    long-run quantities of the OLS residuals, as cointReg: kernel
+    inference, **not fixed-b**. Fixed-b critical values: later, by our own
+    simulation **[open]**. **[check]** whether Vogelsang and Wagner (2014)
+    recommend ω̂_{u·v} from the IM-OLS residuals instead.
+  - Kernels Bartlett (default), Parzen, QS; bandwidth Andrews (AR(1) per
+    column, default), Newey–West or a number. p-values standard normal.
+  - Coefficient names `(Intercept)`, `trend`, and the formula's terms.
+  - `residuals()` is the equilibrium error ẑ_t = y_t − θ̂′(d_t, x_t) over the
+    whole sample for every method (what the EG test and the ECM use).
+- Monte Carlo (triangular DGP, corr(u, v) = 0.6, AR(0.5) error, T = 200,
+  500 reps), coverage of the 95% interval for β: OLS 0.56, FM 0.88,
+  DOLS 0.88, IM 0.91.
+- Validation (tests): FM/D/IM against cointReg, DOLS against the regression
+  written out with `lm`. Still to do: FM-OLS against EViews or MATLAB output
+  for one dataset.
 
 ### 3.3 Engle–Granger test — `eg_test()`
 
@@ -223,8 +231,9 @@ importing its constructor (would need exporting it from adltools).
 
 ## 6. Dependencies
 
-Imports: stats, cointReg, adltools, unitroottools, generics (no urca; §3.3), sandwich (Wald with HAC-type covariance where the method needs
-it), zoo. Suggests: testthat, knitr, rmarkdown, dynlm (cross-checks),
+Imports now: stats, tools, zoo. To add with the functions that need them:
+unitroottools, adltools, generics (no urca, no cointReg; §3.2–3.3).
+Suggests: cointReg (reference in tests), testthat, knitr, rmarkdown, dynlm (cross-checks),
 strucchange, cointmonitoR (§9), tibble, tsibble, xts, fredr (vignette
 only, not run on check).
 
@@ -247,16 +256,15 @@ only, not run on check).
   asymptotic; documented differences) and EViews.
 - ECM test: size by simulation (n = 2, 3; T = 100, 500) against the adopted
   tables.
-- coint_reg: FM/D/IM against `cointReg` directly (trivial) and DOLS against
-  own `lm` + NeweyWest; coverage of a 95% interval for β in the triangular
-  DGP (OLS should undercover, FM/D/IM near 0.95).
+- coint_reg: done for FM/D/IM against cointReg and DOLS against `lm`;
+  coverage in the triangular DGP recorded in §3.2.
 - Development in the Linux workspace; `R CMD check --as-cran` on the M1 Pro
   and CI, as for adltools.
 
 ## 9. Roadmap (proposal)
 
 - **v0.1.0** — input handling (from adltools), `integration_order()`,
-  `coint_reg()` (OLS/FM/D/IM via cointReg), `coint_wald_test()`,
+  `coint_reg()` (OLS/FM/D/IM, own code) and `coint_wald_test()` — DONE,
   `eg_test()` with MacKinnon (2010) critical values and simulated
   p-values (§3.3), `normalisations`, `simulate_coint()`, `simulate_spurious()`,
   `term_structure` data, a vignette following the chapter's applied example

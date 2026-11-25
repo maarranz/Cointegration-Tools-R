@@ -12,3 +12,7 @@
 #'
 #' @keywords internal
 "_PACKAGE"
+
+## Generics for the methods in coint_reg.R
+#' @importFrom stats coef vcov residuals fitted nobs
+NULL
