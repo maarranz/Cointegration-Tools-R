@@ -1,5 +1,7 @@
 # cointegrationtools (R)
 
+[![R-CMD-check](https://github.com/maarranz/Cointegration-Tools-R/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/maarranz/Cointegration-Tools-R/actions/workflows/R-CMD-check.yaml)
+
 Teaching-oriented R tools for **single-equation cointegration**, developed for **Applied Time Series Econometrics (ATSE)** at **Universidad Carlos III de Madrid**.
 
 > **Status: planning.** No code yet. The functions below are the planned API; names and arguments may change. The design decisions are recorded in [`DESIGN.md`](DESIGN.md).

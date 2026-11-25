@@ -1,0 +1,25 @@
+Package: cointegrationtools
+Type: Package
+Title: Teaching-Oriented Tools for Single-Equation Cointegration
+Version: 0.0.0.9000
+Authors@R: person("Miguel A.", "Arranz", email = "maarranz@eco.uc3m.es",
+    role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0002-5951-2284",
+                affiliation = "Universidad Carlos III de Madrid"))
+Description: Single-equation cointegration analysis, developed for Applied
+    Time Series Econometrics (ATSE) at Universidad Carlos III de Madrid:
+    cointegrating regressions estimated by OLS, fully modified, dynamic and
+    integrated modified OLS; the Engle-Granger and error-correction tests
+    with finite-sample critical values and p-values from simulated response
+    surfaces; and the error-correction model. Companion to the 'unitroottools'
+    and 'adltools' packages.
+License: MIT + file LICENSE
+URL: https://github.com/maarranz/Cointegration-Tools-R
+BugReports: https://github.com/maarranz/Cointegration-Tools-R/issues
+Encoding: UTF-8
+Depends: R (>= 4.2)
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.1.1

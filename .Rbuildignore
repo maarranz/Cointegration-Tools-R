@@ -1,0 +1,11 @@
+^README\.md$
+^DESIGN\.md$
+^NEWS\.md$
+^LICENSE\.md$
+^\.gitignore$
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.github$
+^\.vscode$
+^data-raw$
+^docs$
