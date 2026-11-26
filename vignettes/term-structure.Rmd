@@ -93,7 +93,11 @@ abline(h = 0, lty = 2)
 ## Step 3: the cointegrating vector
 
 OLS is superconsistent, but its standard errors are not valid in a
-cointegrating regression. FM-OLS, DOLS and IM-OLS give valid inference:
+cointegrating regression. FM-OLS, DOLS and IM-OLS give asymptotically valid
+inference when the relation is a stable cointegrating one and the long-run
+variances are estimated well; in finite samples, and especially with a
+persistent equilibrium error, their tests can still be noticeably
+oversized.
 
 ```{r}
 fits <- lapply(c(OLS = "OLS", FM = "FM", D = "D", IM = "IM"),

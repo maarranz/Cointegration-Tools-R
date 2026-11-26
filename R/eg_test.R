@@ -21,6 +21,20 @@
 #' the package's own response surfaces (simulated by sample size, lag order,
 #' \eqn{n} and Step 1 case; see `data-raw/`), not from the plain ADF tables.
 #'
+#' **The test assumes that every variable is I(1).** If, say, the
+#' dependent variable is stationary, the residuals are stationary too and the
+#' test rejects, but that is not cointegration. Check the orders of
+#' integration first with [integration_order()].
+#'
+#' The tables were simulated for a fixed lag order on the maximal sample,
+#' with independent driftless random walks. They are used as an
+#' approximation when the lag order is selected, with
+#' `final_sample = "common"`, and when the variables have drift; in the
+#' simulations of the package audit (26 Nov 2026) the size with BIC on the
+#' maximal sample stayed between about 4.5% and 6%, but it fell to about
+#' 2.5% with `final_sample = "common"` and reached about 9% with
+#' `trend = "ct"` and drifting variables at T = 50.
+#'
 #' The sample size used by the surfaces is the length of a series whose
 #' maximal ADF sample is the effective sample, \eqn{T = N + k + 1}, as in
 #' unitroottools. Tables are available for \eqn{n = 2, \dots, 6}.
@@ -77,6 +91,7 @@ eg_test <- function(formula, data, trend = c("c", "ct", "n"), lags = NULL,
   trend <- match.arg(trend)
   criterion <- match.arg(criterion)
   final_sample <- match.arg(final_sample)
+  check_prob(alpha, "alpha")
   res <- eg_core(formula, data, trend, lags, max_lags, criterion, final_sample, alpha,
                  time, start, end)
   if (isTRUE(normalisations)) {
@@ -107,14 +122,26 @@ eg_core <- function(formula, data, trend, lags, max_lags, criterion, final_sampl
          " variables; this regression has ", nvars, ".", call. = FALSE)
   }
   z <- as.numeric(zoo::coredata(fit$residuals))
+  y <- as.numeric(zoo::coredata(fit$y))
+  # an (almost) exact Step 1 fit leaves residuals that are rounding noise; a
+  # unit-root test on them is meaningless (and not invariant to rescaling)
+  if (sqrt(mean(z^2)) <= 1e-9 * max(abs(y), .Machine$double.xmin)) {
+    stop("The cointegrating regression fits exactly (residuals are zero up to ",
+         "rounding): ", fit$yname, " is an exact linear function of the regressors, ",
+         "so there is no equilibrium error to test.", call. = FALSE)
+  }
   a <- unitroottools::adf(z, trend = "n", lags = lags, max_lags = max_lags,
                           criterion = criterion, final_sample = final_sample,
-                          level = alpha)
+                          level = if (alpha %in% c(0.01, 0.05, 0.10)) alpha else 0.05)
   k <- a$lags
   T_eq <- a$nobs + k + 1L
   rs <- eg_rs[[as.character(nvars)]][[trend]]
   cv <- rs_critical_values(rs, T_eq, k)
   p <- rs_p_value(rs, a$statistic, T_eq, k)
+  # decision: p < alpha; when p is only known to be below the smallest
+  # simulated probability and alpha is not above it, the tables cannot decide
+  bound <- min(rs$probs)
+  reject <- if (p <= bound + 1e-12 && alpha <= bound) NA else p < alpha
   # adf()'s own design warnings refer to the same (T, k) grid: unique() keeps one
   warn <- unique(c(a$warnings, rs_design_warnings(rs, T_eq, k), p_value_note(p)))
   sel <- a$lag_selection
@@ -128,10 +155,14 @@ eg_core <- function(formula, data, trend, lags, max_lags, criterion, final_sampl
                       " in Step 1 (own response surfaces; not the ADF tables)"))
   new_coint_test(list(
     method = "Engle-Granger", null_hypothesis = "no cointegration (residuals have a unit root)",
+    assumption = paste0("all ", nvars, " variables are I(1); check with integration_order(). ",
+                        "A stationary variable can make the residuals stationary ",
+                        "without any cointegration."),
     alternative = "cointegration (residuals stationary)",
     statistic = unname(a$statistic), distribution = "Engle-Granger tau",
     critical_values = cv, p.value = p, alpha = alpha,
-    reject_null = isTRUE(p < alpha), nobs = a$nobs, lags = k, nvars = nvars,
+    reject_null = reject, p_bounded = p <= bound + 1e-12 || p >= 1 - bound - 1e-12,
+    nobs = a$nobs, lags = k, nvars = nvars,
     trend = trend, details = details, warnings = warn,
     regression = fit, adf = a, coefficients = NULL),
     title = "Engle-Granger cointegration test")

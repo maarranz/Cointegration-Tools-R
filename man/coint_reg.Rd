@@ -83,7 +83,8 @@ covariances of the residuals and of \eqn{\Delta x_t}.
 or \code{leads} are not given they are chosen by \code{ic} over 0, ..., \code{kmax},
 with every pair fitted on the same observations so that the criteria
 are comparable; the chosen model is then estimated on its own maximal
-sample. Standard errors use the long-run variance of the residuals.
+sample. If only one of \code{lags} and \code{leads} is given, it is held fixed and
+the other is selected. Standard errors use the long-run variance of the residuals.
 \item \strong{IM-OLS} (Vogelsang and Wagner, 2014): OLS on the partial sums of the
 variables, augmented by \eqn{x_t}; the estimate needs no kernel or
 bandwidth. The standard errors use the conditional long-run variance

@@ -88,14 +88,17 @@ dols_design <- function(y, X, D, lags, leads, rows = NULL) {
 
 #' Lags and leads of dx by information criterion on a common sample
 #'
-#' Every pair (lags, leads) in 0..kmax is fitted on the rows
-#' t = 2 + kmax, ..., T - kmax, so that the criteria are comparable;
+#' The free order(s) range over 0..kmax; an order given by the user is held
+#' fixed. Every candidate is fitted on the same rows, t = 2 + max lags, ...,
+#' T - max leads over the candidates, so that the criteria are comparable;
 #' K counts all coefficients, deterministic terms included.
 #' @noRd
-dols_select <- function(y, X, D, kmax, ic) {
+dols_select <- function(y, X, D, kmax, ic, lags = NULL, leads = NULL) {
   T <- length(y)
-  rows <- seq.int(2 + kmax, T - kmax)
-  grid <- expand.grid(lags = 0:kmax, leads = 0:kmax)
+  lag_grid <- if (is.null(lags)) 0:kmax else lags
+  lead_grid <- if (is.null(leads)) 0:kmax else leads
+  rows <- seq.int(2 + max(lag_grid), T - max(lead_grid))
+  grid <- expand.grid(lags = lag_grid, leads = lead_grid)
   n <- length(rows)
   pen <- if (ic == "aic") 2 else log(n)
   grid$value <- apply(grid, 1, function(g) {
@@ -105,7 +108,20 @@ dols_select <- function(y, X, D, kmax, ic) {
   })
   best <- grid[which.min(grid$value), ]
   list(lags = best$lags, leads = best$leads, table = grid, nobs = n,
-       ic = ic, kmax = kmax)
+       ic = ic, kmax = kmax, fixed = c(lags = !is.null(lags), leads = !is.null(leads)))
+}
+
+#' Stop unless a DOLS design leaves enough residual degrees of freedom
+#' @noRd
+dols_feasible <- function(T, k, m, lags, leads, what) {
+  n <- T - 1 - lags - leads
+  p <- m + k * (lags + leads + 2)
+  if (n - p < 10) {
+    stop("DOLS with ", what, " needs more observations: ", n, " usable rows for ",
+         p, " coefficients (at least 10 residual degrees of freedom are required). ",
+         "Use fewer leads/lags or a smaller `kmax`.", call. = FALSE)
+  }
+  invisible(TRUE)
 }
 
 #' Dynamic OLS (Saikkonen, 1991; Stock and Watson, 1993)
@@ -116,12 +132,18 @@ dols_select <- function(y, X, D, kmax, ic) {
 #' @noRd
 coint_dols <- function(y, X, D, lags, leads, kmax, ic, kernel, bandwidth) {
   sel <- NULL
+  T <- length(y)
   if (is.null(lags) || is.null(leads)) {
-    kmax <- kmax %||% floor(4 * (length(y) / 100)^(1 / 4))
-    sel <- dols_select(y, X, D, kmax, ic)
-    lags <- lags %||% sel$lags
-    leads <- leads %||% sel$leads
+    kmax <- kmax %||% floor(4 * (T / 100)^(1 / 4))
+    L <- lags %||% kmax
+    Q <- leads %||% kmax
+    dols_feasible(T, ncol(X), ncol(D), L, Q,
+                  paste0("lags up to ", L, " and leads up to ", Q, " (selection)"))
+    sel <- dols_select(y, X, D, kmax, ic, lags, leads)
+    lags <- sel$lags
+    leads <- sel$leads
   }
+  dols_feasible(T, ncol(X), ncol(D), lags, leads, paste0(lags, " lags and ", leads, " leads"))
   des <- dols_design(y, X, D, lags, leads)
   f <- ls_fit(des$Z, des$y)
   lr <- long_run_cov(matrix(f$resid, ncol = 1, dimnames = list(NULL, "u")),

@@ -135,7 +135,7 @@ test_that("Wald test: text and matrix forms agree with the formula", {
   expect_equal(coint_wald_test(fit, "x1 - 1.5 = 0")$statistic,
                coint_wald_test(fit, "x1 = 1.5")$statistic)
   expect_equal(coint_wald_test(fit, "`(Intercept)` = 2")$df, 1)
-  expect_error(coint_wald_test(fit, "x1 * x2 = 1"), "not linear")
-  expect_error(coint_wald_test(fit, "x3 = 1"), "Unknown")
+  expect_error(coint_wald_test(fit, "x1 * x2 = 1"), "not a linear")
+  expect_error(coint_wald_test(fit, "x3 = 1"), "unknown coefficient")
   expect_output(print(w1), "Chi-square\\(2\\)")
 })

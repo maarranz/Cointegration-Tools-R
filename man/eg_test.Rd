@@ -86,6 +86,20 @@ Step 1, and is further to the left. Critical values and p-values come from
 the package's own response surfaces (simulated by sample size, lag order,
 \eqn{n} and Step 1 case; see \verb{data-raw/}), not from the plain ADF tables.
 
+\strong{The test assumes that every variable is I(1).} If, say, the
+dependent variable is stationary, the residuals are stationary too and the
+test rejects, but that is not cointegration. Check the orders of
+integration first with \code{\link[=integration_order]{integration_order()}}.
+
+The tables were simulated for a fixed lag order on the maximal sample,
+with independent driftless random walks. They are used as an
+approximation when the lag order is selected, with
+\code{final_sample = "common"}, and when the variables have drift; in the
+simulations of the package audit (26 Nov 2026) the size with BIC on the
+maximal sample stayed between about 4.5\% and 6\%, but it fell to about
+2.5\% with \code{final_sample = "common"} and reached about 9\% with
+\code{trend = "ct"} and drifting variables at T = 50.
+
 The sample size used by the surfaces is the length of a series whose
 maximal ADF sample is the effective sample, \eqn{T = N + k + 1}, as in
 unitroottools. Tables are available for \eqn{n = 2, \dots, 6}.

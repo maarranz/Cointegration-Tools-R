@@ -377,3 +377,39 @@ Ouliaris (1990); Gregory and Hansen (1996); Wagner and Wied (cointmonitoR;
 the chapter's key is `wagnerWied2015`, check the year against the journal
 version); Aschersleben and Wagner (2016, cointReg). Keys as in
 `referencesCointegration.bib`.
+
+## 13. Audit of 26 November 2026 (version 0.1.0)
+
+An independent audit (report `2026-11-26-Cointegration-Tools-R-comprehensive-audit.md`)
+found 0 critical, 5 high, 6 medium and 1 low issues; all fixed the same day,
+each with a regression test in `tests/testthat/test-audit.R`:
+
+- H01 exact Step 1 fit: `eg_test()` stops (residual RMS ≤ 1e-9 · max|y|).
+- H02 DOLS with one of `lags`/`leads` given: the other is selected with the
+  given one held fixed, on the common sample of those candidates.
+- H03 Wald text restrictions: parsed by a linear grammar (numbers, names,
+  `+ - ( )`, products and quotients by numbers), never evaluated.
+- H04 text time columns: only ISO dates, converted to Date so the gap check
+  applies; unsupported index classes are refused. **Shared with adltools.**
+- H05 the EG result and help state the I(1) assumption.
+- M01 DOLS feasibility (≥ 10 residual degrees of freedom) and finite counts.
+- M02 levels in (0, 1); named `R` columns matched by name; finite `R`, `r`.
+- M03 p-value exact at tabulated quantiles; when p is at the 0.001 bound and
+  alpha ≤ 0.001 the decision is NA. **p-value part shared with unitroottools.**
+- M04 formulas evaluated in their own environment; regressors named
+  `trend`/`(Intercept)` refused.
+- M05 simulator arguments validated. M06 DESCRIPTION and vignette wording.
+- L01 simulation bounds printed only for simulated p-values.
+
+Research questions kept open:
+
+- **R01** The EG tables are for a fixed lag order, maximal sample, driftless
+  walks; they are used after lag selection, with `final_sample = "common"`
+  and with drift. Audit Monte Carlo (400 draws, 5%): BIC maximal 4.5–6%;
+  BIC common 2.5% at T = 50 (iid); `ct` with drift 9% at T = 50; MAIC
+  undersized throughout. Options: document (done in `?eg_test`), simulate
+  the selection rule, or restrict `final_sample`.
+- **R02** Finite-sample size of FM/DOLS/IM Wald tests with automatic
+  bandwidths and persistent errors (our coverage 0.88–0.91 at T = 200;
+  Andrews bandwidth 105 in the term-structure data). Benchmark, and
+  consider fixed-b for IM-OLS.

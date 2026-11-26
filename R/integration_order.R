@@ -54,6 +54,7 @@ integration_order <- function(formula, data, strategy = c("original", "conservat
                               time = NULL, start = NULL, end = NULL) {
   strategy <- match.arg(strategy)
   criterion <- match.arg(criterion)
+  check_prob(level, "level")
   if (!inherits(formula, "formula")) {
     stop("`formula` must be a formula, e.g. ~ y + x or y ~ x.", call. = FALSE)
   }
@@ -67,7 +68,8 @@ integration_order <- function(formula, data, strategy = c("original", "conservat
   trending <- if (is.null(trending)) vector("list", length(terms)) else
     as.list(rep_len(trending, length(terms)))
 
-  dat <- as_coint_data(data, all.vars(formula), time = time, start = start, end = end)
+  dat <- as_coint_data(data, data_vars(all.vars(formula), data, environment(formula)),
+                       time = time, start = start, end = end)
   df <- as.data.frame(zoo::coredata(dat$z))
   run <- function(y, tr) {
     unitroottools::ur_strategy(y, strategy = strategy, trending = tr, lags = lags,
@@ -75,7 +77,7 @@ integration_order <- function(formula, data, strategy = c("original", "conservat
   }
   strategies <- list()
   rows <- lapply(seq_along(terms), function(i) {
-    y <- eval_term(str2lang(terms[i]), df)
+    y <- eval_term(str2lang(terms[i]), df, environment(formula))
     lev <- run(y, trending[[i]])
     dif <- run(diff(y), if (strategy == "hamilton") FALSE else NULL)
     strategies[[terms[i]]] <<- list(level = lev, difference = dif)

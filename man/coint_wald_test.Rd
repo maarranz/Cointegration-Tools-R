@@ -33,7 +33,11 @@ long-run relation between two interest rates.
 Restrictions can be written as text, one equation per element, using the
 coefficient names of the fit: \code{"x = 1"}, \code{"x1 + x2 = 1"}, \code{"x1 = x2"}.
 Names that are not syntactic (\code{(Intercept)}, \code{log(x)}) go between
-backticks: \code{"`log(x)` = 1"}. Alternatively give \code{R} and \code{r} directly.
+backticks: \code{"`log(x)` = 1"}. Only linear expressions are accepted:
+numbers, coefficient names, \code{+}, \code{-}, parentheses, and products or
+quotients by numbers (\code{"2*x1 - x2/3 = 0"}). Alternatively give \code{R} and
+\code{r} directly; if \code{R} has column names they are matched to the coefficient
+names, otherwise columns are taken in the order of \code{coef(fit)}.
 
 Not available for \code{method = "OLS"}: its covariance matrix is not valid
 for a cointegrating regression.

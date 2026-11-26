@@ -1,7 +1,9 @@
 # Critical values and p-values from the package's own response surfaces.
 #
 # Copied from unitroottools (R/calibration.R, decisions D11, D15, D16, D21);
-# keep the two in step. A surface `rs` (estimated in data-raw/ and stored in
+# keep the two in step. Changed here (audit M03, 26 Nov 2026): a statistic
+# equal to a tabulated quantile gets exactly that probability, so p = alpha
+# at the alpha critical value (before, rounding could give p < alpha). A surface `rs` (estimated in data-raw/ and stored in
 # R/sysdata.rda) gives, for each tabulated probability p, the p-quantile of a
 # statistic computed from a series of length T with k lagged differences:
 #   q_p(T, k) = theta_inf(p) + a_k(p) / T + b_k(p) / T^2 + c_k(p) / T^3.
@@ -56,7 +58,9 @@ rs_critical_values <- function(rs, T, k, tail = "lower", levels = c(0.01, 0.05, 
 rs_p_value <- function(rs, stat, T, k, tail = "lower") {
   q <- rs_quantiles(rs, T, k)
   pr <- rs$probs
-  F <- if (stat <= q[1]) pr[1]
+  knot <- which(abs(stat - q) <= 1e-10 * max(1, abs(stat)))
+  F <- if (length(knot)) pr[knot[1]]                 # exactly at a tabulated quantile
+       else if (stat <= q[1]) pr[1]
        else if (stat >= q[length(q)]) pr[length(pr)]
        else stats::pnorm(stats::approx(q, stats::qnorm(pr), xout = stat, ties = mean)$y)
   p <- if (tail == "lower") F else 1 - F

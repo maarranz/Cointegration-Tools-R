@@ -1,3 +1,20 @@
+# cointegrationtools 0.1.1
+
+Fixes from the audit of 26 November 2026 (details in `DESIGN.md`, section 13):
+
+* `eg_test()` stops when the cointegrating regression fits exactly, states
+  the I(1) assumption in its output, and gives no decision when the p-value
+  is only a bound below `alpha`.
+* `coint_reg(method = "D")`: when only `lags` or only `leads` is given, the
+  other is selected with it held fixed; infeasible orders are refused.
+* `coint_wald_test()`: text restrictions are parsed as linear expressions
+  (never evaluated); named `R` columns are matched by name.
+* Time columns given as text must be ISO dates and are checked for gaps.
+* Formulas are evaluated in their own environment; regressors named
+  `trend` or `(Intercept)` are refused; levels and simulator arguments are
+  validated; p-values equal the level exactly at the tabulated critical
+  values.
+
 # cointegrationtools 0.1.0
 
 * `integration_order()`: order of integration of each variable from

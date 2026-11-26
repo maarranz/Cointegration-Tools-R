@@ -11,7 +11,7 @@
 new_coint_test <- function(x, title) {
   defaults <- list(alternative = NULL, covariance = NULL, coefficients = NULL,
                    df = NA_integer_, critical_values = NULL, details = NULL,
-                   warnings = character())
+                   warnings = character(), p_bounded = FALSE, assumption = NULL)
   for (nm in names(defaults)) if (!nm %in% names(x)) x[nm] <- list(defaults[[nm]])
   structure(x, class = "cointtools_test", title = title)
 }
@@ -51,11 +51,14 @@ print.cointtools_test <- function(x, digits = 4, ...) {
     cat("Critical:    ", paste0(format(100 * as.numeric(names(cv))), "% ",
                                 format(round(cv, 3), nsmall = 3), collapse = "   "), "\n", sep = "")
   }
-  pv <- if (isTRUE(x$p.value <= 0.001 + 1e-9)) "< 0.001" else if (isTRUE(x$p.value >= 0.999 - 1e-9)) "> 0.999"
-        else fmt_num(x$p.value, digits)
+  # the bounds of the simulated tables apply only to simulated p-values (L01)
+  pv <- if (isTRUE(x$p_bounded) && x$p.value < 0.5) "< 0.001"
+        else if (isTRUE(x$p_bounded)) "> 0.999" else fmt_num(x$p.value, digits)
   cat("p-value:     ", pv, "\n", sep = "")
-  cat("Decision:    ", if (isTRUE(x$reject_null)) "reject H0" else "do not reject H0",
-      " at ", format(100 * x$alpha), "%\n", sep = "")
+  dec <- if (is.na(x$reject_null)) "undetermined (p is only known to be below 0.001)"
+         else if (x$reject_null) "reject H0" else "do not reject H0"
+  cat("Decision:    ", dec, " at ", format(100 * x$alpha), "%\n", sep = "")
+  if (!is.null(x$assumption)) cat("Assumes:     ", x$assumption, "\n", sep = "")
   if (!is.null(x$covariance)) cat("Covariance:  ", x$covariance, "\n", sep = "")
   cat("N:           ", x$nobs, "\n", sep = "")
   if (is.data.frame(x$normalisations)) {

@@ -46,6 +46,18 @@ simulate_coint <- function(T = 200, beta = 1, alpha = 0,
   type <- match.arg(type)
   check_count(T, "T")
   if (T < 10) stop("`T` must be at least 10.", call. = FALSE)
+  for (a in list(list(sd_x, "sd_x"), list(sd_z, "sd_z"))) {
+    if (length(a[[1]]) != 1 || !is.numeric(a[[1]]) || !is.finite(a[[1]]) || a[[1]] <= 0) {
+      stop("`", a[[2]], "` must be a single positive number.", call. = FALSE)
+    }
+  }
+  if (!is.numeric(beta) || !length(beta) || any(!is.finite(beta))) {
+    stop("`beta` must be a numeric vector of finite values.", call. = FALSE)
+  }
+  if (length(alpha) != 1 || !is.finite(alpha)) stop("`alpha` must be a single number.", call. = FALSE)
+  if (length(rho) != 1 || !is.finite(rho) || length(corr) != 1 || !is.finite(corr)) {
+    stop("`rho` and `corr` must be single numbers.", call. = FALSE)
+  }
   if (abs(rho) >= 1) stop("`rho` must be between -1 and 1 (stationary error).", call. = FALSE)
   if (abs(corr) >= 1) stop("`corr` must be between -1 and 1.", call. = FALSE)
   if (!is.null(seed)) set.seed(seed)
@@ -101,6 +113,10 @@ simulate_coint <- function(T = 200, beta = 1, alpha = 0,
 #' @export
 simulate_spurious <- function(T = c(50, 100, 200, 500, 1000), M = 1000, seed = NULL) {
   check_count(M, "M")
+  if (M < 1) stop("`M` must be at least 1.", call. = FALSE)
+  if (!is.numeric(T) || !length(T) || any(!is.finite(T)) || any(T != round(T)) || any(T < 5)) {
+    stop("`T` must be whole numbers of at least 5.", call. = FALSE)
+  }
   if (!is.null(seed)) set.seed(seed)
   draws <- do.call(rbind, lapply(T, function(n) {
     r <- t(vapply(seq_len(M), function(i) {

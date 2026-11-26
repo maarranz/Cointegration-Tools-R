@@ -25,7 +25,8 @@ trend_labels <- c(n = "none", c = "constant", ct = "constant and linear trend")
 #'   or `leads` are not given they are chosen by `ic` over 0, ..., `kmax`,
 #'   with every pair fitted on the same observations so that the criteria
 #'   are comparable; the chosen model is then estimated on its own maximal
-#'   sample. Standard errors use the long-run variance of the residuals.
+#'   sample. If only one of `lags` and `leads` is given, it is held fixed and
+#'   the other is selected. Standard errors use the long-run variance of the residuals.
 #' * **IM-OLS** (Vogelsang and Wagner, 2014): OLS on the partial sums of the
 #'   variables, augmented by \eqn{x_t}; the estimate needs no kernel or
 #'   bandwidth. The standard errors use the conditional long-run variance
@@ -99,11 +100,17 @@ coint_reg <- function(formula, data, method = c("OLS", "FM", "D", "IM"),
   check_count(kmax, "kmax")
 
   spec <- parse_coint_formula(formula)
-  dat <- as_coint_data(data, spec$vars, time = time, start = start, end = end)
+  dat <- as_coint_data(data, data_vars(spec$vars, data, spec$env), time = time,
+                       start = start, end = end)
   df <- as.data.frame(zoo::coredata(dat$z))
-  y <- eval_term(spec$lhs, df)
-  X <- do.call(cbind, lapply(spec$rhs, eval_term, df = df))
+  y <- eval_term(spec$lhs, df, spec$env)
+  X <- do.call(cbind, lapply(spec$rhs, eval_term, df = df, env = spec$env))
   colnames(X) <- spec$rhs_labels
+  clash <- intersect(spec$rhs_labels, c("(Intercept)", "trend"))
+  if (length(clash)) {
+    stop("A regressor is called ", paste0("'", clash, "'", collapse = ", "),
+         ", the name of a deterministic term; rename it.", call. = FALSE)
+  }
   T <- length(y)
   D <- switch(trend,
               n = matrix(numeric(0), T, 0),
@@ -142,7 +149,7 @@ coint_reg <- function(formula, data, method = c("OLS", "FM", "D", "IM"),
 #' @noRd
 check_count <- function(x, name) {
   if (is.null(x)) return(invisible(TRUE))
-  if (length(x) != 1 || !is.numeric(x) || is.na(x) || x < 0 || x != round(x)) {
+  if (length(x) != 1 || !is.numeric(x) || !is.finite(x) || x < 0 || x != round(x)) {
     stop("`", name, "` must be a non-negative whole number.", call. = FALSE)
   }
   invisible(TRUE)
@@ -165,14 +172,15 @@ parse_coint_formula <- function(formula) {
   labels <- attr(tt, "term.labels")
   if (length(labels) == 0) stop("The formula has no regressors.", call. = FALSE)
   rhs <- lapply(labels, str2lang)
+  env <- environment(formula) %||% parent.frame()
   list(lhs = formula[[2]], lhs_label = deparse1(formula[[2]]),
-       rhs = rhs, rhs_labels = labels, vars = all.vars(formula))
+       rhs = rhs, rhs_labels = labels, vars = all.vars(formula), env = env)
 }
 
 #' Evaluate one term on the data, as a numeric vector
 #' @noRd
-eval_term <- function(term, df) {
-  v <- suppressWarnings(eval(term, df, environment(stats::lm)))
+eval_term <- function(term, df, env = environment(stats::lm)) {
+  v <- suppressWarnings(eval(term, df, env))
   if (!is.numeric(v) || length(v) != nrow(df) || !is.null(dim(v)) && ncol(v) != 1) {
     stop("The term `", deparse1(term), "` does not give one numeric series.", call. = FALSE)
   }
@@ -228,6 +236,7 @@ coint_table <- function(object, level = 0.95) {
 #'   only.
 #' @export
 summary.coint_reg <- function(object, level = 0.95, ...) {
+  check_prob(level, "level")
   tab <- coint_table(object, level)
   if (object$method == "OLS") tab <- tab[, c("term", "estimate")]
   structure(c(unclass(object), list(table = tab, level = level)),
@@ -250,9 +259,13 @@ print.summary.coint_reg <- function(x, digits = 4, ...) {
       " (T = ", x$n, if (x$nobs != x$n) paste0("; ", x$nobs, " in the regression"),
       ")\n", sep = "")
   if (x$method == "D") {
-    how <- if (is.null(x$selection)) "given" else
-      paste0(toupper(x$selection$ic), " over 0..", x$selection$kmax,
-             " on a common sample of ", x$selection$nobs, " obs.")
+    sel <- x$selection
+    how <- if (is.null(sel)) "given" else {
+      free <- c("lags", "leads")[!sel$fixed]
+      paste0(paste(free, collapse = " and "), " by ", toupper(sel$ic), " over 0..", sel$kmax,
+             if (any(sel$fixed)) paste0(", ", c("lags", "leads")[sel$fixed], " fixed"),
+             ", on a common sample of ", sel$nobs, " obs.")
+    }
     cat("Leads, lags:   ", x$leads, " leads, ", x$lags, " lags of the differenced regressors (", how,
         ")\n", sep = "")
   }
@@ -280,4 +293,23 @@ print.summary.coint_reg <- function(x, digits = 4, ...) {
         "\nuse method = \"FM\", \"D\" or \"IM\" for inference on the coefficients.\n")
   }
   invisible(x)
+}
+
+#' Check a probability-type argument (significance or confidence level)
+#' @noRd
+check_prob <- function(x, name) {
+  if (length(x) != 1 || !is.numeric(x) || !is.finite(x) || x <= 0 || x >= 1) {
+    stop("`", name, "` must be a single number between 0 and 1.", call. = FALSE)
+  }
+  invisible(TRUE)
+}
+
+#' Variables of a formula to take from the data: all, except those that are
+#' not columns of the data but exist in the formula's environment (constants
+#' or objects used by a transformation)
+#' @noRd
+data_vars <- function(vars, data, env) {
+  cols <- colnames(data) %||% names(data)
+  keep <- vars %in% cols | !vapply(vars, exists, logical(1), envir = env)
+  vars[keep]
 }
