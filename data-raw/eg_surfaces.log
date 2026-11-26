@@ -1,0 +1,110 @@
+n=2 n    max |residual| at p in {0.01, 0.05, 0.1}: 0.0204 (RMS <= 0.0042)
+n=2 c    max |residual| at p in {0.01, 0.05, 0.1}: 0.0265 (RMS <= 0.0055)
+n=2 ct   max |residual| at p in {0.01, 0.05, 0.1}: 0.0312 (RMS <= 0.0061)
+n=3 n    max |residual| at p in {0.01, 0.05, 0.1}: 0.0295 (RMS <= 0.0052)
+n=3 c    max |residual| at p in {0.01, 0.05, 0.1}: 0.0327 (RMS <= 0.0063)
+n=3 ct   max |residual| at p in {0.01, 0.05, 0.1}: 0.0655 (RMS <= 0.0075)
+n=4 n    max |residual| at p in {0.01, 0.05, 0.1}: 0.0338 (RMS <= 0.0055)
+n=4 c    max |residual| at p in {0.01, 0.05, 0.1}: 0.0275 (RMS <= 0.0055)
+n=4 ct   max |residual| at p in {0.01, 0.05, 0.1}: 0.0574 (RMS <= 0.0079)
+n=5 n    max |residual| at p in {0.01, 0.05, 0.1}: 0.0399 (RMS <= 0.0052)
+n=5 c    max |residual| at p in {0.01, 0.05, 0.1}: 0.0502 (RMS <= 0.0070)
+n=5 ct   max |residual| at p in {0.01, 0.05, 0.1}: 0.0714 (RMS <= 0.0092)
+n=6 n    max |residual| at p in {0.01, 0.05, 0.1}: 0.0623 (RMS <= 0.0084)
+n=6 c    max |residual| at p in {0.01, 0.05, 0.1}: 0.0587 (RMS <= 0.0096)
+n=6 ct   max |residual| at p in {0.01, 0.05, 0.1}: 0.0538 (RMS <= 0.0108)
+
+Non-monotone fitted quantiles (should be 0 everywhere):
+  n=2 n  0 of 151 cells
+  n=2 c  0 of 151 cells
+  n=2 ct 0 of 151 cells
+  n=3 n  0 of 151 cells
+  n=3 c  0 of 151 cells
+  n=3 ct 0 of 151 cells
+  n=4 n  0 of 151 cells
+  n=4 c  0 of 151 cells
+  n=4 ct 0 of 151 cells
+  n=5 n  0 of 151 cells
+  n=5 c  0 of 151 cells
+  n=5 ct 0 of 151 cells
+  n=6 n  0 of 151 cells
+  n=6 c  0 of 151 cells
+  n=6 ct 0 of 151 cells
+
+Own surfaces (k = 0) vs MacKinnon (1996), critical values at 1%, 5%, 10%
+n=2 n  T=  50  own  -3.479 -2.822 -2.493   MacKinnon  -3.475 -2.820 -2.492   max diff 0.0038
+n=2 n  T= 100  own  -3.411 -2.790 -2.476   MacKinnon  -3.409 -2.791 -2.475   max diff 0.0020
+n=2 n  T= 250  own  -3.370 -2.771 -2.465   MacKinnon  -3.370 -2.774 -2.466   max diff 0.0027
+n=2 n  T= 500  own  -3.356 -2.765 -2.461   MacKinnon  -3.358 -2.768 -2.463   max diff 0.0033
+n=2 n  T=1000  own  -3.349 -2.762 -2.459   MacKinnon  -3.351 -2.766 -2.461   max diff 0.0036
+n=2 c  T=  50  own  -4.127 -3.465 -3.132   MacKinnon  -4.125 -3.461 -3.131   max diff 0.0038
+n=2 c  T= 100  own  -4.010 -3.399 -3.088   MacKinnon  -4.008 -3.398 -3.087   max diff 0.0014
+n=2 c  T= 250  own  -3.941 -3.360 -3.061   MacKinnon  -3.941 -3.361 -3.062   max diff 0.0012
+n=2 c  T= 500  own  -3.919 -3.346 -3.051   MacKinnon  -3.919 -3.348 -3.053   max diff 0.0024
+n=2 c  T=1000  own  -3.907 -3.339 -3.047   MacKinnon  -3.908 -3.342 -3.049   max diff 0.0031
+n=2 ct T=  50  own  -4.656 -3.981 -3.645   MacKinnon  -4.652 -3.976 -3.641   max diff 0.0051
+n=2 ct T= 100  own  -4.491 -3.878 -3.568   MacKinnon  -4.486 -3.877 -3.568   max diff 0.0052
+n=2 ct T= 250  own  -4.391 -3.818 -3.523   MacKinnon  -4.390 -3.819 -3.525   max diff 0.0021
+n=2 ct T= 500  own  -4.356 -3.797 -3.508   MacKinnon  -4.358 -3.800 -3.511   max diff 0.0031
+n=2 ct T=1000  own  -4.339 -3.787 -3.500   MacKinnon  -4.342 -3.790 -3.504   max diff 0.0036
+n=3 n  T=  50  own  -4.077 -3.410 -3.077   MacKinnon  -4.072 -3.407 -3.076   max diff 0.0052
+n=3 n  T= 100  own  -3.966 -3.353 -3.040   MacKinnon  -3.965 -3.351 -3.039   max diff 0.0017
+n=3 n  T= 250  own  -3.902 -3.318 -3.017   MacKinnon  -3.902 -3.318 -3.017   max diff 0.0006
+n=3 n  T= 500  own  -3.881 -3.306 -3.009   MacKinnon  -3.881 -3.307 -3.009   max diff 0.0010
+n=3 n  T=1000  own  -3.871 -3.300 -3.005   MacKinnon  -3.871 -3.302 -3.006   max diff 0.0014
+n=3 c  T=  50  own  -4.598 -3.919 -3.580   MacKinnon  -4.595 -3.916 -3.578   max diff 0.0033
+n=3 c  T= 100  own  -4.443 -3.829 -3.515   MacKinnon  -4.441 -3.827 -3.514   max diff 0.0022
+n=3 c  T= 250  own  -4.352 -3.775 -3.476   MacKinnon  -4.351 -3.775 -3.477   max diff 0.0008
+n=3 c  T= 500  own  -4.321 -3.757 -3.463   MacKinnon  -4.322 -3.757 -3.464   max diff 0.0012
+n=3 c  T=1000  own  -4.305 -3.748 -3.457   MacKinnon  -4.307 -3.749 -3.458   max diff 0.0021
+n=3 ct T=  50  own  -5.061 -4.367 -4.023   MacKinnon  -5.057 -4.364 -4.020   max diff 0.0031
+n=3 ct T= 100  own  -4.858 -4.243 -3.930   MacKinnon  -4.855 -4.240 -3.927   max diff 0.0035
+n=3 ct T= 250  own  -4.737 -4.167 -3.872   MacKinnon  -4.738 -4.166 -3.871   max diff 0.0013
+n=3 ct T= 500  own  -4.696 -4.140 -3.851   MacKinnon  -4.700 -4.142 -3.853   max diff 0.0039
+n=3 ct T=1000  own  -4.675 -4.127 -3.841   MacKinnon  -4.681 -4.130 -3.844   max diff 0.0056
+n=4 n  T=  50  own  -4.571 -3.890 -3.551   MacKinnon  -4.565 -3.887 -3.549   max diff 0.0065
+n=4 n  T= 100  own  -4.420 -3.805 -3.491   MacKinnon  -4.418 -3.803 -3.490   max diff 0.0023
+n=4 n  T= 250  own  -4.332 -3.753 -3.454   MacKinnon  -4.332 -3.754 -3.455   max diff 0.0014
+n=4 n  T= 500  own  -4.303 -3.735 -3.441   MacKinnon  -4.304 -3.738 -3.444   max diff 0.0030
+n=4 n  T=1000  own  -4.289 -3.726 -3.435   MacKinnon  -4.290 -3.730 -3.438   max diff 0.0039
+n=4 c  T=  50  own  -5.031 -4.331 -3.983   MacKinnon  -5.020 -4.325 -3.980   max diff 0.0104
+n=4 c  T= 100  own  -4.831 -4.211 -3.896   MacKinnon  -4.827 -4.210 -3.895   max diff 0.0032
+n=4 c  T= 250  own  -4.713 -4.139 -3.843   MacKinnon  -4.716 -4.141 -3.844   max diff 0.0027
+n=4 c  T= 500  own  -4.674 -4.115 -3.825   MacKinnon  -4.680 -4.119 -3.827   max diff 0.0051
+n=4 c  T=1000  own  -4.655 -4.103 -3.815   MacKinnon  -4.662 -4.108 -3.819   max diff 0.0065
+n=4 ct T=  50  own  -5.454 -4.735 -4.381   MacKinnon  -5.439 -4.728 -4.375   max diff 0.0148
+n=4 ct T= 100  own  -5.207 -4.579 -4.263   MacKinnon  -5.198 -4.576 -4.260   max diff 0.0088
+n=4 ct T= 250  own  -5.058 -4.485 -4.190   MacKinnon  -5.060 -4.488 -4.192   max diff 0.0028
+n=4 ct T= 500  own  -5.008 -4.453 -4.164   MacKinnon  -5.014 -4.458 -4.169   max diff 0.0064
+n=4 ct T=1000  own  -4.983 -4.437 -4.151   MacKinnon  -4.992 -4.444 -4.158   max diff 0.0095
+n=5 n  T=  50  own  -5.013 -4.311 -3.965   MacKinnon  -5.001 -4.307 -3.961   max diff 0.0121
+n=5 n  T= 100  own  -4.822 -4.197 -3.881   MacKinnon  -4.813 -4.194 -3.879   max diff 0.0086
+n=5 n  T= 250  own  -4.705 -4.127 -3.830   MacKinnon  -4.704 -4.128 -3.831   max diff 0.0012
+n=5 n  T= 500  own  -4.665 -4.104 -3.812   MacKinnon  -4.668 -4.106 -3.814   max diff 0.0028
+n=5 n  T=1000  own  -4.645 -4.092 -3.803   MacKinnon  -4.650 -4.095 -3.806   max diff 0.0051
+n=5 c  T=  50  own  -5.421 -4.707 -4.353   MacKinnon  -5.413 -4.702 -4.348   max diff 0.0081
+n=5 c  T= 100  own  -5.187 -4.561 -4.242   MacKinnon  -5.180 -4.557 -4.239   max diff 0.0069
+n=5 c  T= 250  own  -5.045 -4.470 -4.173   MacKinnon  -5.045 -4.471 -4.175   max diff 0.0013
+n=5 c  T= 500  own  -4.997 -4.439 -4.150   MacKinnon  -5.001 -4.443 -4.153   max diff 0.0040
+n=5 c  T=1000  own  -4.972 -4.423 -4.138   MacKinnon  -4.979 -4.429 -4.142   max diff 0.0067
+n=5 ct T=  50  own  -5.817 -5.080 -4.716   MacKinnon  -5.801 -5.071 -4.710   max diff 0.0157
+n=5 ct T= 100  own  -5.529 -4.897 -4.576   MacKinnon  -5.520 -4.891 -4.571   max diff 0.0086
+n=5 ct T= 250  own  -5.358 -4.783 -4.488   MacKinnon  -5.358 -4.785 -4.489   max diff 0.0019
+n=5 ct T= 500  own  -5.300 -4.744 -4.457   MacKinnon  -5.305 -4.750 -4.461   max diff 0.0060
+n=5 ct T=1000  own  -5.271 -4.724 -4.441   MacKinnon  -5.279 -4.732 -4.448   max diff 0.0085
+n=6 n  T=  50  own  -5.410 -4.692 -4.339   MacKinnon  -5.399 -4.687 -4.334   max diff 0.0108
+n=6 n  T= 100  own  -5.172 -4.548 -4.230   MacKinnon  -5.170 -4.546 -4.229   max diff 0.0024
+n=6 n  T= 250  own  -5.032 -4.461 -4.163   MacKinnon  -5.037 -4.463 -4.166   max diff 0.0049
+n=6 n  T= 500  own  -4.986 -4.431 -4.140   MacKinnon  -4.994 -4.435 -4.145   max diff 0.0074
+n=6 n  T=1000  own  -4.963 -4.416 -4.129   MacKinnon  -4.972 -4.422 -4.134   max diff 0.0087
+n=6 c  T=  50  own  -5.795 -5.059 -4.697   MacKinnon  -5.783 -5.052 -4.690   max diff 0.0128
+n=6 c  T= 100  own  -5.515 -4.881 -4.560   MacKinnon  -5.509 -4.878 -4.557   max diff 0.0059
+n=6 c  T= 250  own  -5.346 -4.772 -4.475   MacKinnon  -5.349 -4.775 -4.478   max diff 0.0036
+n=6 c  T= 500  own  -5.288 -4.735 -4.446   MacKinnon  -5.297 -4.741 -4.451   max diff 0.0084
+n=6 c  T=1000  own  -5.260 -4.716 -4.431   MacKinnon  -5.271 -4.724 -4.438   max diff 0.0113
+n=6 ct T=  50  own  -6.157 -5.405 -5.035   MacKinnon  -6.145 -5.397 -5.028   max diff 0.0117
+n=6 ct T= 100  own  -5.833 -5.194 -4.870   MacKinnon  -5.824 -5.188 -4.864   max diff 0.0081
+n=6 ct T= 250  own  -5.634 -5.061 -4.764   MacKinnon  -5.638 -5.064 -4.767   max diff 0.0044
+n=6 ct T= 500  own  -5.566 -5.014 -4.727   MacKinnon  -5.577 -5.023 -4.734   max diff 0.0117
+n=6 ct T=1000  own  -5.531 -4.990 -4.708   MacKinnon  -5.547 -5.002 -4.718   max diff 0.0161
+Largest difference: 0.0161

@@ -4,7 +4,7 @@
 
 Teaching-oriented R tools for **single-equation cointegration**, developed for **Applied Time Series Econometrics (ATSE)** at **Universidad Carlos III de Madrid**.
 
-> **Status: in development.** `coint_reg()` (OLS, FM-OLS, DOLS, IM-OLS) and `coint_wald_test()` are written and tested; the other functions below are planned, and names and arguments may still change. The design decisions are recorded in [`DESIGN.md`](DESIGN.md).
+> **Status: in development.** `coint_reg()` (OLS, FM-OLS, DOLS, IM-OLS), `coint_wald_test()` and `eg_test()` are written and tested; the other functions below are planned, and names and arguments may still change. The design decisions are recorded in [`DESIGN.md`](DESIGN.md).
 
 ## Scope
 

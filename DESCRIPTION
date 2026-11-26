@@ -21,12 +21,15 @@ Depends: R (>= 4.2)
 Imports:
     stats,
     tools,
+    unitroottools (>= 0.3.3),
     zoo
 Suggests:
     cointReg,
     testthat (>= 3.0.0),
     tibble,
     tsibble
+Remotes:
+    maarranz/UnitRoot-Tools-R
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 Config/roxygen2/version: 8.1.1

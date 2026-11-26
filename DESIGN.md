@@ -97,7 +97,21 @@ coint_reg(y ~ x1 + x2, data,
   written out with `lm`. Still to do: FM-OLS against EViews or MATLAB output
   for one dataset.
 
-### 3.3 Engle–Granger test — `eg_test()`
+### 3.3 Engle–Granger test — `eg_test()` (DONE, 26 Nov 2026)
+
+Surfaces simulated on the M1 Pro (nvars = 2..6): fit residuals ≤ 0.07 at
+1/5/10%, all fitted quantiles monotone, k = 0 critical values within 0.016
+of MacKinnon (1996) (mostly < 0.01), size in fresh simulations (195 cells,
+T = 33..610, k up to 20) within 0.006 of 5% for both critical values and
+p-values. Surface index T = N + k + 1 (as unitroottools).
+
+**Default lag criterion: BIC** (decided 26 Nov 2026), not `adf()`'s MAIC.
+On the residuals MAIC picks long lags when the alternative is far from the
+null: in 200 replications of a cointegrated pair (T = 200, AR(0.5)
+equilibrium error) power was MAIC 0.875, AIC 0.995, BIC 1.000, k = 1 1.000;
+under the null (independent walks) size MAIC 0.02, AIC 0.04, BIC 0.03.
+Other criteria remain available through `criterion`.
+
 
 ```r
 eg_test(y ~ x1 + x2, data, trend = c("c", "ct", "n"),
@@ -288,14 +302,20 @@ only, not run on check).
    n/c/ct, residual ADF without deterministics over t = k+2..T, maximal
    sample as `adf()`). cointegrationtools reuses them: one run per n,
    output with an `nvars` column, surfaces fitted as for τ. No ctt case.
-2. **adltools**: `ec =` argument in `weak_exogeneity_test()`.
-3. **cointegrationtools v0.1.0** (needs 1).
-4. **cointegrationtools v0.2.0**: ECM-test tables (same machinery as 1),
+2. **cointegrationtools data-raw** (scripts ready 25 Nov 2026): `eg_simulate.R`
+   for nvars = 2..6 (one resumable job per (nvars, T), parts in
+   `data-raw/eg_parts/`), `eg_response_surfaces.R` (fit, monotonicity check,
+   comparison with MacKinnon 1996 via urca's tables), `make_sysdata.R`,
+   `eg_validate.R`. About 20 core-hours of the development sandbox; run on
+   the M1 Pro. nvars = 7..12 later with the same script.
+3. **adltools**: `ec =` argument in `weak_exogeneity_test()`.
+4. **cointegrationtools v0.1.0** (needs 1 and 2).
+5. **cointegrationtools v0.2.0**: ECM-test tables (same machinery as 1),
    `coint_ecm()`, `ecm_test()`.
-5. Bounds test in adltools, re-exported here.
+6. Bounds test in adltools, re-exported here.
 
-Simulation design to fix before step 1: grid of T, number of replications,
-trend cases (n, c, ct; ctt?), and the p-value method near the tails.
+Simulation design (decided 25 Nov 2026): the τ grid of unitroottools for every
+nvars, nvars = 2..6 first; cells without residual degrees of freedom dropped.
 
 ## 10. Points to settle in the chapter as the package is written
 

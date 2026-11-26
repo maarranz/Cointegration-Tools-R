@@ -1,0 +1,7 @@
+Engle-Granger simulation: nvars = 2, 3, 4, 5, 6; E = 40, R = 10000; 8 cores; 95 of 95 jobs to run
+Simulations done in 2.1 hours
+nvars = 2: 103194 rows -> eg_quantiles_n2.csv.gz
+nvars = 3: 103194 rows -> eg_quantiles_n3.csv.gz
+nvars = 4: 103194 rows -> eg_quantiles_n4.csv.gz
+nvars = 5: 103194 rows -> eg_quantiles_n5.csv.gz
+nvars = 6: 103194 rows -> eg_quantiles_n6.csv.gz
