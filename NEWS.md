@@ -1,4 +1,14 @@
-# cointegrationtools (development version)
+# cointegrationtools 0.1.0
+
+* `integration_order()`: order of integration of each variable from
+  `unitroottools::ur_strategy()` on the differences and the levels, read from
+  the highest order down (Dickey and Pantula, 1987); BIC lag selection.
+* `simulate_coint()`: the chapter's data-generating processes (cointegrated
+  with AR(1) error and optional endogeneity, independent random walks, slope
+  break). `simulate_spurious()`: the spurious-regression Monte Carlo, with a
+  `plot()` method.
+* `term_structure`: monthly TB3MS and GS10 from FRED (`data-raw/term_structure.R`).
+* Vignette "Cointegration in the term structure of interest rates".
 
 * `coint_reg()`: cointegrating regression by static OLS, fully modified OLS
   (Phillips and Hansen, 1990), dynamic OLS (Saikkonen, 1991; Stock and

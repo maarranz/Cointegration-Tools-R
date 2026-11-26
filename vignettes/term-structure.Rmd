@@ -1,0 +1,135 @@
+---
+title: "Cointegration in the term structure of interest rates"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cointegration in the term structure of interest rates}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+options(width = 100)
+```
+
+This vignette follows the applied example of the cointegration chapter of
+*Applied Time Series Econometrics* (ATSE). The expectations hypothesis of the
+term structure says that a long interest rate is roughly an average of
+expected future short rates. Both rates wander like random walks, but the
+spread between them should be stationary: the two rates should be
+**cointegrated**, with a cointegrating slope near one.
+
+```{r}
+library(cointegrationtools)
+```
+
+## The data
+
+`term_structure` holds the monthly 3-month Treasury bill rate (`tb3ms`) and
+the 10-year Treasury rate (`gs10`) from FRED, from April 1953.
+
+```{r}
+head(term_structure)
+with(term_structure, {
+  plot(date, gs10, type = "l", ylim = range(tb3ms, gs10), xlab = "", ylab = "percent",
+       main = "10-year and 3-month US Treasury rates")
+  lines(date, tb3ms, col = "grey50")
+  legend("topright", c("10-year (gs10)", "3-month (tb3ms)"), col = c("black", "grey50"),
+         lty = 1, bty = "n")
+})
+```
+
+## Step 1: are both rates I(1)?
+
+Cointegration is a question about I(1) variables, so the first step is the
+order of integration of each series. Interest rates have no deterministic
+trend, so Hamilton's rule with `trending = FALSE` is the natural strategy
+(see the unit-root chapter).
+
+```{r}
+integration_order(gs10 ~ tb3ms, term_structure, strategy = "hamilton", trending = FALSE)
+```
+
+Neither level rejects a unit root at 5% (the bill rate is close, with a
+p-value under 10%), and both differences reject it clearly: both rates are
+treated as I(1).
+
+## Step 2: Engle-Granger test
+
+Step 1 of Engle-Granger regresses the long rate on the short rate with a
+constant; Step 2 tests the residuals for a unit root, with **no**
+deterministic terms and with the Engle-Granger critical values, which are
+more negative than the ADF ones.
+
+```{r}
+eg <- eg_test(gs10 ~ tb3ms, term_structure)
+eg
+```
+
+The residual check flags remaining autocorrelation with the 3 lags chosen
+by BIC. More lags weaken the rejection but do not overturn it:
+
+```{r}
+sapply(c(6, 12), function(k) eg_test(gs10 ~ tb3ms, term_structure, lags = k)$p.value)
+```
+
+The result also depends on which rate is on the left of Step 1. With
+`normalisations = TRUE` both versions are shown:
+
+```{r}
+eg_test(gs10 ~ tb3ms, term_structure, normalisations = TRUE)$normalisations
+```
+
+The Step 1 residuals are the estimated equilibrium error (the spread, up to
+the intercept and the slope):
+
+```{r}
+z <- residuals(eg$regression)
+plot(term_structure$date, as.numeric(z), type = "l", xlab = "", ylab = "",
+     main = "Engle-Granger residuals (estimated equilibrium error)")
+abline(h = 0, lty = 2)
+```
+
+## Step 3: the cointegrating vector
+
+OLS is superconsistent, but its standard errors are not valid in a
+cointegrating regression. FM-OLS, DOLS and IM-OLS give valid inference:
+
+```{r}
+fits <- lapply(c(OLS = "OLS", FM = "FM", D = "D", IM = "IM"),
+               function(m) coint_reg(gs10 ~ tb3ms, term_structure, method = m))
+sapply(fits, coef)
+```
+
+```{r}
+fits$FM
+```
+
+The Andrews bandwidth is large: the equilibrium error is very persistent,
+so the long-run variances, and the standard errors built on them, are
+estimated with considerable uncertainty.
+
+The strict expectations hypothesis implies a slope of one. A Wald test with
+the FM-OLS covariance:
+
+```{r}
+coint_wald_test(fits$FM, "tb3ms = 1")
+```
+
+and with DOLS and IM-OLS:
+
+```{r}
+sapply(fits[c("D", "IM")], function(f) coint_wald_test(f, "tb3ms = 1")$p.value)
+```
+
+None of the three estimators rejects a slope of one at 5%, although the
+point estimates are below one (OLS, which should not be used for this test,
+is furthest from it). The intercept, about 1.5 percentage points in FM-OLS
+and IM-OLS, is the average term premium: the long-run gap between the long
+and the short rate, which cointegration does not require to be zero.
+
+## Where next
+
+The error-correction model built on this relation, its stability, and the
+Gregory-Hansen test for a break in the cointegrating vector come in later
+versions of the package, following the rest of the chapter.

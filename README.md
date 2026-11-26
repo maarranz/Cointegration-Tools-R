@@ -4,7 +4,7 @@
 
 Teaching-oriented R tools for **single-equation cointegration**, developed for **Applied Time Series Econometrics (ATSE)** at **Universidad Carlos III de Madrid**.
 
-> **Status: in development.** `coint_reg()` (OLS, FM-OLS, DOLS, IM-OLS), `coint_wald_test()` and `eg_test()` are written and tested; the other functions below are planned, and names and arguments may still change. The design decisions are recorded in [`DESIGN.md`](DESIGN.md).
+> **Status: version 0.1.0.** `integration_order()`, `coint_reg()` (OLS, FM-OLS, DOLS, IM-OLS), `coint_wald_test()`, `eg_test()`, the simulators and the term-structure vignette are available. The ECM functions (`coint_ecm()`, `ecm_test()`) are planned for 0.2.0; names and arguments may still change. The design decisions are recorded in [`DESIGN.md`](DESIGN.md).
 
 ## Scope
 
@@ -36,8 +36,6 @@ Later: Gregoryâ€“Hansen tests for a break in the cointegrating vector, Phillipsâ
 | cointegrationtools | Cointegration-Tools-R | Single-equation cointegration (this package) |
 
 ## Installation
-
-Not yet installable. Once released:
 
 ```r
 # install.packages("remotes")

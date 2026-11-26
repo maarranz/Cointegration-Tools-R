@@ -1,7 +1,7 @@
 Package: cointegrationtools
 Type: Package
 Title: Teaching-Oriented Tools for Single-Equation Cointegration
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: person("Miguel A.", "Arranz", email = "maarranz@eco.uc3m.es",
     role = c("aut", "cre"),
     comment = c(ORCID = "0000-0002-5951-2284",
@@ -17,6 +17,7 @@ License: MIT + file LICENSE
 URL: https://github.com/maarranz/Cointegration-Tools-R
 BugReports: https://github.com/maarranz/Cointegration-Tools-R/issues
 Encoding: UTF-8
+LazyData: true
 Depends: R (>= 4.2)
 Imports:
     stats,
@@ -25,11 +26,14 @@ Imports:
     zoo
 Suggests:
     cointReg,
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0),
     tibble,
     tsibble
 Remotes:
     unitroottools=github::maarranz/UnitRoot-Tools-R
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 Config/roxygen2/version: 8.1.1

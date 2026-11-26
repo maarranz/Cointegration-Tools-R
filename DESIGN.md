@@ -83,8 +83,11 @@ coint_reg(y ~ x1 + x2, data,
     ω̂_{u·v}(Z′Z)⁻¹C′C(Z′Z)⁻¹ correctly scaled. ω̂_{u·v} from the FM-OLS
     long-run quantities of the OLS residuals, as cointReg: kernel
     inference, **not fixed-b**. Fixed-b critical values: later, by our own
-    simulation **[open]**. **[check]** whether Vogelsang and Wagner (2014)
-    recommend ω̂_{u·v} from the IM-OLS residuals instead.
+    simulation **[open]**. ω̂_{u·v} from the OLS
+    residuals is the paper's own choice for traditional inference (IHS
+    working paper 263, eq. 7); the estimator from the differences of the
+    IM-OLS residuals is inconsistent (limit σ²_u·v(1 + d′d)) and gives
+    conservative tests. Settled 26 Nov 2026.
   - Kernels Bartlett (default), Parzen, QS; bandwidth Andrews (AR(1) per
     column, default), Newey–West or a number. p-values standard normal.
   - Coefficient names `(Intercept)`, `trend`, and the formula's terms.
@@ -94,8 +97,9 @@ coint_reg(y ~ x1 + x2, data,
   500 reps), coverage of the 95% interval for β: OLS 0.56, FM 0.88,
   DOLS 0.88, IM 0.91.
 - Validation (tests): FM/D/IM against cointReg, DOLS against the regression
-  written out with `lm`. Still to do: FM-OLS against EViews or MATLAB output
-  for one dataset.
+  written out with `lm`. Still to do: FM-OLS, DOLS and the EG test against
+  EViews (server access) on one dataset; IM-OLS stays checked against
+  cointReg only (EViews has no IM-OLS).
 
 ### 3.3 Engle–Granger test — `eg_test()` (DONE, 26 Nov 2026)
 
@@ -277,12 +281,14 @@ only, not run on check).
 
 ## 9. Roadmap (proposal)
 
-- **v0.1.0** — input handling (from adltools), `integration_order()`,
-  `coint_reg()` (OLS/FM/D/IM, own code) and `coint_wald_test()` — DONE,
-  `eg_test()` with MacKinnon (2010) critical values and simulated
-  p-values (§3.3), `normalisations`, `simulate_coint()`, `simulate_spurious()`,
-  `term_structure` data, a vignette following the chapter's applied example
-  up to Step 3.
+- **v0.1.0** — DONE 26 Nov 2026: `coint_reg()`, `coint_wald_test()`,
+  `eg_test()`, `integration_order()` (Dickey-Pantula order: differences
+  first; BIC lags), `simulate_coint()`, `simulate_spurious()`,
+  `term_structure` (FRED, `data-raw/term_structure.R`), vignette
+  "Cointegration in the term structure of interest rates".
+  Note for unitroottools: with MAIC, `ur_strategy()` on the differences of a
+  random walk chose 14 lags and did not reject (T = 200); same pattern as on
+  EG residuals (§3.3). Worth a look in unitroottools.
 - **v0.2.0** — `coint_ecm()` returning an `adl` object (diagnostics and
   stability from adltools), weak exogeneity via adltools, `ecm_test()`,
   `simulate_eg()`, vignette extended to Steps 4–5.
