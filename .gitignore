@@ -21,3 +21,4 @@ docs/
 
 # data-raw: partial simulation results
 data-raw/eg_parts/
+data-raw/ecm_parts/

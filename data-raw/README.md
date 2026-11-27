@@ -35,10 +35,33 @@ need Rcpp. Nothing here is part of the built package (`.Rbuildignore`).
    fitted quantiles are monotone, and compares the k = 0 critical values with
    MacKinnon (1996) (his tables as shipped in urca; urca is only needed
    here).
-3. `Rscript make_sysdata.R` — writes `../R/sysdata.rda`.
+3. `Rscript make_sysdata.R` — writes `../R/sysdata.rda` (`eg_rs`, and `ecm_rs` once it exists).
 4. `Rscript eg_validate.R` — size of the 1/5/10% critical values and of
    p <= level in fresh simulations at (T, k) not on the grid
    (T = 33, 60, 137, 290, 610; k up to 20), 20,000 replications per cell.
+
+## ECM test statistic: `ecm_rs`
+
+1. `ecm_simulate.R` (kernel `ecm_kernel.cpp`) — the t ratio of y_{t-1} in
+   the unrestricted ECM, dy_t on [deterministics, y_{t-1}, x_{t-1}, dx_t,
+   dy_{t-1..t-p}, dx_{t-1..t-p}], plain OLS standard error, under the null
+   (`nvars` independent random walks). Cases `c` and `ct`; p = 0..4 lagged
+   differences; T = 20, ..., 1000; 40 x 10,000 replications per (nvars, T);
+   seeds 20261127 + nvars. Resumable through `ecm_parts/` (not committed).
+
+   ```bash
+   cd data-raw
+   Rscript ecm_simulate.R          # nvars = 2..6
+   ```
+
+   Cost: timed on a small run, about 9 core-hours of the development
+   machine for nvars = 2..6, so under an hour on 8-10 cores.
+2. `Rscript ecm_response_surfaces.R` — surfaces (p in the role of k),
+   monotonicity check, and the 1/5/10% values by p for comparison with
+   Ericsson and MacKinnon (2002) and the chapter's Table 2.
+3. `Rscript make_sysdata.R` — now stores `eg_rs` and, if present, `ecm_rs`.
+4. `Rscript ecm_validate.R` — size in fresh simulations at T = 33, 60, 137,
+   290, 610 and p up to 4.
 
 ## Shared code
 

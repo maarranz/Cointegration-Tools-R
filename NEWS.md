@@ -1,3 +1,17 @@
+# cointegrationtools (development version)
+
+* `coint_ecm()`: the Engle-Granger two-step error-correction model on any
+  `coint_reg()` fit, returned as an adltools model, so its diagnostics,
+  CUSUM, Chow, Hansen and outlier tools apply directly; prints the speed of
+  adjustment. `coint_weak_exogeneity_test()`: weak exogeneity of a regressor
+  for the cointegrating vector (Urbain, 1992).
+* `simulate_eg()`: the chapter's Monte Carlo of the ADF, Engle-Granger and
+  ECM statistics under the null, with the package's EG critical values for
+  comparison, and a density plot.
+* `coint_recursive()`: recursive (growing-sample) or rolling estimates of the
+  cointegrating regression with confidence bands, and a `plot()` method, for
+  checking the stability of the long-run relation.
+
 # cointegrationtools 0.1.1
 
 Fixes from the audit of 26 November 2026 (details in `DESIGN.md`, section 13):

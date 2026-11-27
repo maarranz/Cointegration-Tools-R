@@ -289,6 +289,20 @@ only, not run on check).
   Note for unitroottools: with MAIC, `ur_strategy()` on the differences of a
   random walk chose 14 lags and did not reject (T = 200); same pattern as on
   EG residuals (§3.3). Worth a look in unitroottools.
+- **0.1.1.9000** (27 Nov 2026): `coint_recursive()` — recursive or rolling
+  OLS/FM/D/IM estimates with bands and `plot()`, for parameter stability
+  (core Lab: term structure 1953–2007, then the extension to 2026).
+- **0.1.1.9000** (27 Nov 2026), also: `coint_ecm()` (adltools `adl` object
+  for Δy with `ec` = ẑ_{t-1} after `|`; adjustment b printed),
+  `coint_weak_exogeneity_test()` (own marginal regression, z test; adltools'
+  `weak_exogeneity_test(ec =)` works on level ADL fits, not on the ECM in
+  differences), `simulate_eg()` (ADF/EG/ECM null Monte Carlo; EG quantiles
+  agree with the tables, e.g. n = 3, k = 2, T = 200: 5% −3.70 vs −3.72).
+- **ECM-test tables** (scripts ready 27 Nov 2026, run planned next week on
+  the M1 Pro, under an hour): `ecm_kernel.cpp` (checked against `lm`),
+  `ecm_simulate.R` (nvars 2..6, cases c/ct, p = 0..4, T = 20..1000,
+  40 x 10,000), `ecm_response_surfaces.R`, `ecm_validate.R`;
+  `make_sysdata.R` stores `ecm_rs` too. Then `ecm_test()`.
 - **v0.2.0** — `coint_ecm()` returning an `adl` object (diagnostics and
   stability from adltools), weak exogeneity via adltools, `ecm_test()`,
   `simulate_eg()`, vignette extended to Steps 4–5.

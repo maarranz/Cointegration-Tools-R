@@ -4,7 +4,7 @@
 
 Teaching-oriented R tools for **single-equation cointegration**, developed for **Applied Time Series Econometrics (ATSE)** at **Universidad Carlos III de Madrid**.
 
-> **Status: version 0.1.0.** `integration_order()`, `coint_reg()` (OLS, FM-OLS, DOLS, IM-OLS), `coint_wald_test()`, `eg_test()`, the simulators and the term-structure vignette are available. The ECM functions (`coint_ecm()`, `ecm_test()`) are planned for 0.2.0; names and arguments may still change. The design decisions are recorded in [`DESIGN.md`](DESIGN.md).
+> **Status: version 0.1.0.** `integration_order()`, `coint_reg()` (OLS, FM-OLS, DOLS, IM-OLS), `coint_wald_test()`, `eg_test()`, the simulators and the term-structure vignette are available. `coint_ecm()`, `coint_recursive()` and `simulate_eg()` are in the development version; `ecm_test()` is planned for 0.2.0; names and arguments may still change. The design decisions are recorded in [`DESIGN.md`](DESIGN.md).
 
 ## Scope
 
