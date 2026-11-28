@@ -1,4 +1,13 @@
-# cointegrationtools (development version)
+# cointegrationtools 0.2.0
+
+* `ecm_test()`: the error-correction test for cointegration (Kremers,
+  Ericsson and Dolado, 1992; Ericsson and MacKinnon, 2002), plain-OLS t ratio
+  of y(-1) in the unrestricted ECM, with critical values and p-values from
+  the package's own response surfaces for 2 to 6 variables, constant or
+  constant and trend, and p = 0 to 4 lagged differences (BIC by default);
+  reports the implied long-run coefficients.
+* `simulate_eg()` also shows the ECM-test critical values.
+* Vignette: Steps 4 (ECM test and ECM) and 5 (recursive estimates, CUSUM).
 
 * `coint_ecm()`: the Engle-Granger two-step error-correction model on any
   `coint_reg()` fit, returned as an adltools model, so its diagnostics,

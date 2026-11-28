@@ -298,12 +298,18 @@ only, not run on check).
   `weak_exogeneity_test(ec =)` works on level ADL fits, not on the ECM in
   differences), `simulate_eg()` (ADF/EG/ECM null Monte Carlo; EG quantiles
   agree with the tables, e.g. n = 3, k = 2, T = 200: 5% −3.70 vs −3.72).
-- **ECM-test tables** (scripts ready 27 Nov 2026, run planned next week on
-  the M1 Pro, under an hour): `ecm_kernel.cpp` (checked against `lm`),
+- **ECM-test tables** — DONE 28 Nov 2026 (run on the M1 Pro, ~25 min): `ecm_kernel.cpp` (checked against `lm`),
   `ecm_simulate.R` (nvars 2..6, cases c/ct, p = 0..4, T = 20..1000,
   40 x 10,000), `ecm_response_surfaces.R`, `ecm_validate.R`;
-  `make_sysdata.R` stores `ecm_rs` too. Then `ecm_test()`.
-- **v0.2.0** — `coint_ecm()` returning an `adl` object (diagnostics and
+  `make_sysdata.R` stores `ecm_rs` too. Cells with < 10 residual df dropped
+  from the fit (with 1 df the 1% quantile is about -70); then fit residuals
+  <= 0.06, all fitted quantiles monotone, size in fresh simulations within
+  0.0042 of 5% (120 cells). p matters little (n = 2, c, T = 100, 5%: -3.25 at
+  p = 0, -3.21 at p = 4). Asymptotic 5%, constant: n = 2..6: -3.21, -3.50,
+  -3.76, -3.98, -4.19. **The chapter's Table 2 (-3.28, -3.63, -3.94, -4.22
+  for n = 2..5) is more negative and should be replaced** (check against
+  Ericsson and MacKinnon's own tables). `ecm_test()` written (v0.2.0).
+- **v0.2.0** — DONE 28 Nov 2026. Planned as: `coint_ecm()` returning an `adl` object (diagnostics and
   stability from adltools), weak exogeneity via adltools, `ecm_test()`,
   `simulate_eg()`, vignette extended to Steps 4–5.
 - **v0.3.0** — Gregory–Hansen (C, C/T, C/S; ADF*, Z_t*, Z_α*; their 1996

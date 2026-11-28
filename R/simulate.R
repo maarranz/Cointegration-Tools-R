@@ -239,6 +239,8 @@ simulate_eg <- function(T = 500, M = 2000, n = 2, lags = 0, seed = NULL) {
   tab <- rbind(
     t(apply(draws, 2, stats::quantile, probs = pr)),
     `EG tables` = unname(rs_critical_values(rs, T, lags)),
+    `ECM tables` = if (lags <= 4) unname(rs_critical_values(ecm_rs[[as.character(n)]][["c"]], T, lags))
+                   else rep(NA_real_, 3),
     `N(0,1)` = stats::qnorm(pr))
   colnames(tab) <- c("1%", "5%", "10%")
   out <- data.frame(statistic = rownames(tab), tab, check.names = FALSE, row.names = NULL)
@@ -255,8 +257,9 @@ print.simulate_eg <- function(x, digits = 3, ...) {
   tab <- as.data.frame(unclass(x), check.names = FALSE)
   tab[-1] <- lapply(tab[-1], round, digits)
   print(tab, row.names = FALSE)
-  cat("\nRows 1-3: simulated quantiles. 'EG tables': the package's critical values",
-      "\nfor the same case (compare with row EG). None of the three is N(0, 1).\n")
+  cat("\nRows 1-3: simulated quantiles. 'EG tables' and 'ECM tables': the package's",
+      "\ncritical values for the same case (compare with rows EG and ECM).",
+      "\nNone of the three is N(0, 1).\n")
   invisible(x)
 }
 

@@ -4,7 +4,7 @@
 
 Teaching-oriented R tools for **single-equation cointegration**, developed for **Applied Time Series Econometrics (ATSE)** at **Universidad Carlos III de Madrid**.
 
-> **Status: version 0.1.0.** `integration_order()`, `coint_reg()` (OLS, FM-OLS, DOLS, IM-OLS), `coint_wald_test()`, `eg_test()`, the simulators and the term-structure vignette are available. `coint_ecm()`, `coint_recursive()` and `simulate_eg()` are in the development version; `ecm_test()` is planned for 0.2.0; names and arguments may still change. The design decisions are recorded in [`DESIGN.md`](DESIGN.md).
+> **Status: version 0.2.0.** Integration order, cointegrating regressions (OLS, FM-OLS, DOLS, IM-OLS) with Wald tests and recursive estimates, the Engle-Granger and ECM tests with their own tables, the error-correction model, the teaching simulators and the term-structure vignette are available. Gregory-Hansen and Phillips-Ouliaris are planned; names and arguments may still change. The design decisions are recorded in [`DESIGN.md`](DESIGN.md).
 
 ## Scope
 
@@ -13,9 +13,9 @@ Teaching-oriented R tools for **single-equation cointegration**, developed for *
 | Task | Planned functions |
 |:--|:--|
 | Integration order | `integration_order()`: unit-root tests on each series, in levels and differences (through `unitroottools`) |
-| Cointegrating regression | `coint_reg()`: OLS, fully modified OLS, dynamic OLS and integrated modified OLS, one interface and one result class; `coint_wald_test()` for restrictions on the cointegrating vector |
+| Cointegrating regression | `coint_recursive()` for recursive or rolling estimates; `coint_reg()`: OLS, fully modified OLS, dynamic OLS and integrated modified OLS, one interface and one result class; `coint_wald_test()` for restrictions on the cointegrating vector |
 | Engle–Granger test | `eg_test()`: residual-based ADF test with finite-sample critical values and p-values that depend on the number of variables and the deterministic terms; optional comparison across normalisations |
-| ECM-based test | `ecm_test()`: the t-ratio on the error-correction term (Kremers, Ericsson and Dolado; Ericsson and MacKinnon), with its own critical values and p-values |
+| ECM-based test | `ecm_test()`: the t-ratio on y(-1) in the unrestricted ECM (Kremers, Ericsson and Dolado; Ericsson and MacKinnon), with its own critical values and p-values |
 | Error-correction model | `coint_ecm()`: the two-step ECM, returned as an `adltools` model so that its diagnostics, CUSUM, Chow and Hansen tests apply directly; weak exogeneity of the regressors |
 | Teaching simulations | `simulate_coint()`, `simulate_spurious()`, `simulate_eg()`: spurious regression, cointegrated systems, and the null distributions of the ADF, Engle–Granger and ECM statistics |
 

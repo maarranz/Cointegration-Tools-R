@@ -2,6 +2,7 @@
 # ecm_simulate.R; fit by fit_surface() (surface_fit.R) on T >= 25, separately
 # for each nvars and case ("c", "ct"), with p in the role of k:
 #   q_p(T, p) = theta_inf(prob) + a_p(prob) / T + b_p(prob) / T^2 + c_p(prob) / T^3.
+# Cells with fewer than 10 residual degrees of freedom are dropped (see below).
 # Writes ecm_rs.rds (list by nvars, then case); then run make_sysdata.R.
 # Report: fit, monotonicity, and the 1/5/10% values at T = 50, 100, 250,
 # 1000 and the limit for each p, to compare with Ericsson and MacKinnon (2002)
@@ -12,6 +13,14 @@ files <- sort(list.files(pattern = "^ecm_quantiles_n[0-9]+\\.csv\\.gz$"))
 if (!length(files)) stop("No ecm_quantiles_n*.csv.gz files: run ecm_simulate.R first.")
 ecm <- do.call(rbind, lapply(files, read.csv))
 ecm <- ecm[!is.na(ecm$q), ]
+# Cells with very few residual degrees of freedom (large nvars and p at the
+# smallest T) have t ratios with extremely heavy tails (quantiles of -70 with
+# 1 df) that the polynomial in 1/T cannot fit; they are not used. With
+# P = deterministics + y_{t-1} + 2(n-1) + p n columns and T - p - 1 rows, keep
+# cells with at least 10 residual degrees of freedom; the design Tmin of each
+# p then rises accordingly, and ecm_test() notes samples below it.
+ecm$df <- with(ecm, T - k - 1 - ((case == "ct") + 2 + 2 * (nvars - 1) + k * nvars))
+ecm <- ecm[ecm$df >= 10, ]
 nvars_all <- sort(unique(ecm$nvars))
 
 ecm_rs <- lapply(stats::setNames(nvars_all, nvars_all), function(nv) {

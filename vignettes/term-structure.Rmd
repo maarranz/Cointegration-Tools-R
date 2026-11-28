@@ -132,8 +132,42 @@ is furthest from it). The intercept, about 1.5 percentage points in FM-OLS
 and IM-OLS, is the average term premium: the long-run gap between the long
 and the short rate, which cointegration does not require to be zero.
 
+## Step 4: the error-correction model
+
+The ECM test uses the unrestricted error-correction model directly; under
+its assumptions (I(1) variables, weakly exogenous regressor) it is usually
+more powerful than Engle-Granger:
+
+```{r}
+ecm_test(gs10 ~ tb3ms, term_structure)
+```
+
+The two-step ECM on the FM-OLS long-run relation gives the speed of
+adjustment, and its residuals can be checked with the adltools tools:
+
+```{r}
+ecm <- coint_ecm(fits$FM, p = 1, q = 1)
+ecm
+coint_weak_exogeneity_test(fits$FM)
+```
+
+## Step 5: stability
+
+Recursive estimates show how the long-run relation changes as the sample
+grows:
+
+```{r, fig.height = 6}
+rec <- coint_recursive(gs10 ~ tb3ms, term_structure, method = "FM")
+plot(rec, ref = c(tb3ms = 1))
+```
+
+and the CUSUM test of the ECM checks its short-run stability:
+
+```{r}
+adltools::cusum_test(ecm)
+```
+
 ## Where next
 
-The error-correction model built on this relation, its stability, and the
-Gregory-Hansen test for a break in the cointegrating vector come in later
-versions of the package, following the rest of the chapter.
+The Gregory-Hansen test for a break in the cointegrating vector comes in a
+later version of the package, following the rest of the chapter.
