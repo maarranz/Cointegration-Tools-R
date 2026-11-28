@@ -167,7 +167,23 @@ and the CUSUM test of the ECM checks its short-run stability:
 adltools::cusum_test(ecm)
 ```
 
-## Where next
+A break in the cointegrating vector itself is the alternative of the
+Gregory-Hansen test, which searches over the break date. Its critical values
+are asymptotic, so only the interval of the p-value is reported:
 
-The Gregory-Hansen test for a break in the cointegrating vector comes in a
-later version of the package, following the rest of the chapter.
+```{r, fig.height = 4}
+gh <- gh_test(gs10 ~ tb3ms, term_structure, model = "C/S")
+gh
+plot(gh)
+```
+
+Rejection here is evidence of cointegration allowing for a break, not
+evidence of a break: Steps 2 and 4 already rejected without one. The break
+date is best read together with the recursive estimates above.
+
+The Phillips-Ouliaris test replaces the lagged differences of the
+Engle-Granger regression with a kernel correction:
+
+```{r}
+po_test(gs10 ~ tb3ms, term_structure)
+```

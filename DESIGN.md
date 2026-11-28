@@ -312,8 +312,48 @@ only, not run on check).
 - **v0.2.0** — DONE 28 Nov 2026. Planned as: `coint_ecm()` returning an `adl` object (diagnostics and
   stability from adltools), weak exogeneity via adltools, `ecm_test()`,
   `simulate_eg()`, vignette extended to Steps 4–5.
-- **v0.3.0** — Gregory–Hansen (C, C/T, C/S; ADF*, Z_t*, Z_α*; their 1996
-  Table 1 critical values; grid plot of ADF(τ)); Phillips–Ouliaris.
+- **v0.3.0** — DONE 28 Nov 2026. Decided (28 Nov): published tables where
+  they exist, own simulations only when cheap ("no point in reinventing the
+  wheel at every step").
+  - `gh_test()`: models C, C/T, C/S (default) and C/S/T (Gregory and Hansen
+    1996b); ADF*, Z_t*, Z_α* computed together, one reported (`statistic`);
+    trim 0.15; D_t = 1(t > t_b), break reported as the first date of the
+    second regime; ADF lags selected at each date (BIC default) through a
+    fast copy of `adf(trend = "n")` for BIC/AIC (tested equal to `adf()`),
+    `adf()` itself for MAIC/MBIC; Z statistics as `po_test()`.
+    **Asymptotic critical values only** (1/5/10%, m = 1..4), typed from
+    Gregory and Hansen's Table 1; p-value given as an interval, `alpha`
+    restricted to 0.01/0.05/0.10. Sources for the table: the C/S/T values
+    read from Gregory and Hansen (1996b) on Hansen's web page; C, C/T, C/S
+    from COINT 0.0.4 (Ho, 2026), which agree with the values usually quoted;
+    COINT has a bug for m = 4 (its Z_α* values of models C, C/T, C/S are
+    overwritten by the C/S/T ones). Checked by simulation
+    (`data-raw/gh_check.R`, T = 400, 3000 replications, ADF* with k = 0 and
+    Z_α* as N(ρ − 1)): no transcription error; the simulated 5% ADF*
+    quantiles are 0.0–0.13 more negative than the tables (finite-sample and
+    the tables' own approximation), so the asymptotic values may over-reject
+    somewhat at moderate T; Z_α* simulated values are less negative than the
+    tables (slow convergence, as for Phillips–Ouliaris). **To confirm against the 1996a paper**
+    (not reachable from the sandbox). Finite-sample GH surfaces: later, if
+    the Lab shows they matter (each replication searches ~0.7T dates).
+  - `po_test()`: Z_t and Z_α (Phillips–Perron formulas on the residuals,
+    N = T - 1, s² = Σe²/N; same formula as `tseries::po.test()`), Bartlett
+    kernel with Andrews bandwidth by default; own surfaces
+    (`data-raw/po_kernel.cpp`, `po_simulate.R`, `po_response_surfaces.R`:
+    nvars 2..6, cases n/c/ct, k = 0, T = 20..1000, 40 x 10,000; run in the
+    sandbox, 19 min on 2 cores). Z_t: response surface (residuals ≤ 0.02).
+    Z_α: the cubic in 1/T misfits by up to 0.46 (~10 s.e., smooth pattern;
+    the Andrews bandwidth grows like T^(1/3)), so it is tabulated by T
+    (`table_calibration()`), with the limit from the cubic on T ≥ 100. Size
+    in fresh simulations (`po_validate.R`, 45 cells, 4000 replications):
+    within 0.0062 (Z_t) and 0.0075 (Z_α) of 5% (s.e. 0.0034). Limits agree
+    with MacKinnon for Z_t (5%, c: −3.34 … −4.73 for n = 2..6); Phillips and
+    Ouliaris' Z_α table (as in tseries) matches our T = 500 quantiles
+    (5%, c: −20.52, −26.38, −32.14, −37.43, −42.82 vs −20.49, −26.09,
+    −32.06, −37.15, −41.94), not the limit (−20.60 … −43.42): their table is
+    a T = 500 simulation. With bandwidth < 1, Z_t equals the Engle–Granger
+    statistic with no lags (tested).
+  - Vignette Step 5: Gregory–Hansen (C/S) and Phillips–Ouliaris.
 - **Later** — ECM levels forecasts; Hatemi-J two-break test; monitoring
   through `cointmonitoR` (Suggests; the chapter's "Going further");
   bounds test **[open]**.

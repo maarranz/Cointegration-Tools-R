@@ -1,0 +1,2 @@
+Phillips-Ouliaris simulation: nvars = 2, 3, 4, 5, 6; E = 40, R = 10000; 2 cores; 95 jobs
+Done in 19.4 mins: 66690 rows -> po_quantiles.csv.gz

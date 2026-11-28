@@ -1,3 +1,15 @@
+# cointegrationtools 0.3.0
+
+* `gh_test()`: the Gregory-Hansen tests (ADF\*, Z_t\*, Z_alpha\*) for
+  cointegration with one break at an unknown date, models C, C/T, C/S and
+  C/S/T, with the asymptotic critical values of Gregory and Hansen (1996a, b)
+  and the interval of the p-value; `plot()` draws the statistics over the
+  break dates.
+* `po_test()`: the Phillips-Ouliaris Z_t and Z_alpha tests, with critical
+  values and p-values from the package's own response surfaces (2 to 6
+  variables, cases n, c and ct).
+* Vignette: Gregory-Hansen and Phillips-Ouliaris in Step 5.
+
 # cointegrationtools 0.2.0
 
 * `ecm_test()`: the error-correction test for cointegration (Kremers,

@@ -52,7 +52,8 @@ print.cointtools_test <- function(x, digits = 4, ...) {
                                 format(round(cv, 3), nsmall = 3), collapse = "   "), "\n", sep = "")
   }
   # the bounds of the simulated tables apply only to simulated p-values (L01)
-  pv <- if (isTRUE(x$p_bounded) && x$p.value < 0.5) "< 0.001"
+  pv <- if (!is.null(x$p_text)) x$p_text
+        else if (isTRUE(x$p_bounded) && x$p.value < 0.5) "< 0.001"
         else if (isTRUE(x$p_bounded)) "> 0.999" else fmt_num(x$p.value, digits)
   cat("p-value:     ", pv, "\n", sep = "")
   dec <- if (is.na(x$reject_null)) "undetermined (p is only known to be below 0.001)"
@@ -61,6 +62,12 @@ print.cointtools_test <- function(x, digits = 4, ...) {
   if (!is.null(x$assumption)) cat("Assumes:     ", x$assumption, "\n", sep = "")
   if (!is.null(x$covariance)) cat("Covariance:  ", x$covariance, "\n", sep = "")
   cat("N:           ", x$nobs, "\n", sep = "")
+  if (is.data.frame(x$statistics)) {
+    cat("\nAll three statistics (minimum over the break dates):\n")
+    st <- x$statistics
+    st$value <- signif(st$value, digits)
+    print(st, row.names = FALSE)
+  }
   if (is.data.frame(x$normalisations)) {
     cat("\nEach variable as the dependent one:\n")
     nt <- x$normalisations

@@ -1,7 +1,7 @@
 Package: cointegrationtools
 Type: Package
 Title: Teaching-Oriented Tools for Single-Equation Cointegration
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: person("Miguel A.", "Arranz", email = "maarranz@eco.uc3m.es",
     role = c("aut", "cre"),
     comment = c(ORCID = "0000-0002-5951-2284",
@@ -11,9 +11,10 @@ Description: Single-equation cointegration analysis, developed for Applied
     the order of integration of the variables; cointegrating regressions
     estimated by OLS, fully modified, dynamic and integrated modified OLS,
     with Wald tests and recursive estimates of the cointegrating vector; the
-    Engle-Granger and error-correction tests with finite-sample critical
-    values and p-values from simulated response surfaces; and the
-    error-correction model. Companion to the 'unitroottools' and 'adltools' packages.
+    Engle-Granger, Phillips-Ouliaris and error-correction tests with
+    finite-sample critical values and p-values from simulated response
+    surfaces; the Gregory-Hansen tests for cointegration with a break; and
+    the error-correction model. Companion to the 'unitroottools' and 'adltools' packages.
 License: MIT + file LICENSE
 URL: https://github.com/maarranz/Cointegration-Tools-R
 BugReports: https://github.com/maarranz/Cointegration-Tools-R/issues

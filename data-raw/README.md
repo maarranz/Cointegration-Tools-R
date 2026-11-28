@@ -69,3 +69,24 @@ need Rcpp. Nothing here is part of the built package (`.Rbuildignore`).
 unitroottools/data-raw, and `../R/calibration.R` of unitroottools'
 `R/calibration.R`; keep them identical. For nvars = 1 the kernel gives the
 plain ADF τ statistics, i.e. unitroottools' own tables.
+
+## Phillips-Ouliaris Z_t and Z_alpha: `po_rs`
+
+1. `Rscript po_simulate.R` (kernel `po_kernel.cpp`) — the two statistics
+   under the null, with the Engle-Granger DGP and cases (`n`, `c`, `ct`),
+   nvars = 2..6, T = 20..1000, 40 x 10,000 replications per (nvars, T);
+   Bartlett kernel with Andrews' bandwidth, the defaults of `po_test()`. No
+   lag order (k = 0). Seeds 20261128 + nvars. Writes `po_quantiles.csv.gz`.
+   About 20 minutes on 2 cores (it was run in the development sandbox).
+2. `Rscript po_response_surfaces.R` — Z_t: response surface as Engle-Granger;
+   Z_alpha: tabulated by T (`table_calibration()`), because its quantiles are
+   not a cubic in 1/T. Writes `po_rs.rds` and the log `po_surfaces.log`.
+3. `Rscript make_sysdata.R`.
+4. `Rscript po_validate.R` — size of the 5% tests in fresh simulations
+   (`po_validate.log`).
+
+## Gregory-Hansen tables
+
+The asymptotic critical values are typed into `R/gh_test.R` from Gregory and
+Hansen (1996a, b). `Rscript gh_check.R` compares them with a simulation at
+T = 400 (`gh_check.log`; a few minutes on 2 cores).
